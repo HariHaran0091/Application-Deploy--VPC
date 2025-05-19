@@ -1,0 +1,130 @@
+STEP1 : ps aux | grep nginx
+root       11255  0.0  0.1  11156  1716 ?        Ss   07:38   0:00 nginx: master process /usr/sbin/nginx -g daemon on; master_process on;
+www-data   11257  0.0  0.5  12880  5172 ?        S    07:38   0:00 nginx: worker process
+ubuntu     11465  0.0  0.2   7076  2048 pts/1    S+   07:38   0:00 grep --color=auto nginx
+
+
+ChatGPT said:
+Perfect! 🎉 This confirms:
+
+arduino
+Copy
+Edit
+nginx: master process ...
+nginx: worker process ...
+✅ NGINX is installed and running successfully on your Ubuntu EC2 instance.
+
+THEN 
+
+STEP2:
+
+sudo apt update
+sudo apt install -y nginx
+sudo systemctl start nginx
+sudo systemctl enable nginx
+
+THEN 
+
+STEP3:
+
+Check that it’s running:
+
+bash
+Copy
+Edit
+curl -I http://localhost
+You should see:
+
+arduino
+Copy
+Edit
+HTTP/1.1 200 OK
+Server: nginx/...
+
+THEN 
+
+STEP4 :
+
+What to do next:
+Check where your app files are located on the server:
+
+Run this to list your home directory:
+
+bash
+Copy
+Edit
+ls -la ~/
+Look for your app folder or files.
+
+If your app files are not yet uploaded:
+
+You need to upload them to the server first (via SCP, SFTP, Git, or manually creating files).
+
+If you want to create a simple test file to confirm setup:
+
+Run this to create a simple HTML file in the web root:
+
+bash
+Copy
+Edit
+echo "<h1>Hello from my app!</h1>" | sudo tee /var/www/html/index.html
+Then check in browser or with:
+
+bash
+Copy
+Edit
+curl http://localhost
+You should see "Hello from my app!" instead of the NGINX welcome page.
+
+STEP5:
+
+ls -la ~/
+
+ls -la ~/
+total 40
+drwxr-x--- 4 ubuntu ubuntu 4096 May 15 07:37 .
+drwxr-xr-x 3 root   root   4096 May 14 17:36 ..
+-rw------- 1 ubuntu ubuntu  114 May 15 07:18 .bash_history
+-rw-r--r-- 1 ubuntu ubuntu  220 Mar 31  2024 .bash_logout
+-rw-r--r-- 1 ubuntu ubuntu 3771 Mar 31  2024 .bashrc
+drwx------ 2 ubuntu ubuntu 4096 May 14 17:46 .cache
+-rw-r--r-- 1 ubuntu ubuntu  807 Mar 31  2024 .profile
+drwx------ 2 ubuntu ubuntu 4096 May 14 17:36 .ssh
+-rw-r--r-- 1 ubuntu ubuntu    0 May 15 07:37 .sudo_as_admin_successful
+-rw------- 1 ubuntu ubuntu  805 May 14 17:48 .viminfo
+-rw-rw-r-- 1 ubuntu ubuntu  466 May 14 17:48 loves.html
+
+
+Thanks for sharing! I see your home directory contains a file named loves.html.
+
+Next steps to deploy that as your app:
+
+STEP6: 
+
+Copy this loves.html file to the NGINX web root:
+
+bash
+Copy
+Edit
+sudo cp ~/loves.html /var/www/html/index.html
+Make sure permissions are correct:
+
+bash
+Copy
+Edit
+sudo chown www-data:www-data /var/www/html/index.html
+sudo chmod 644 /var/www/html/index.html
+Restart NGINX (just to be sure):
+
+bash
+Copy
+Edit
+sudo systemctl restart nginx
+Now check in browser or with curl:
+
+bash
+Copy
+Edit
+curl http://localhost
+You should see the content of your loves.html file served instead of the default NGINX page.
+
